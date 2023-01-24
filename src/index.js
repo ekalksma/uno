@@ -16,9 +16,11 @@ class Game extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      Deck: this.createDeck(),
-      Topcard: {number: 0, color: 'red'},
+      deck: this.createDeck(),
+      topcard: {number: 0, color: 'red'},
+      player: [{number: 0, color: 'red'},{number: 0, color: 'red'}],
     };
+    console.log(this.state.Deck)
   }
 
   componentDidMount() {
@@ -27,7 +29,7 @@ class Game extends React.Component {
 
   setTopcard() {
     this.setState({
-      Topcard: this.state.Deck[0]
+      Topcard: this.state.deck[0]
     })
   }
 
@@ -36,27 +38,31 @@ class Game extends React.Component {
 
   createDeck() {
     let deck = [];
-    for (let i = 0; i < 10; i++) {
-      deck.push({
-        color: 'red',
-        number: 1,
-     })
-    }
+    const colors = ['red','blue','green','yellow'];
 
-    return deck;
+    colors.forEach(color => {
+      for (let i = 0; i < 10; i++) {
+        deck.push({
+          color: color,
+          number: 1,
+       })
+      }  
+    })
+
+    return deck.sort(() => Math.random() - 0.5);
   }
 
   render() {
-
     return (
       <div className="game">
         <div className="topcard">
           <Card
-            color={this.state.Topcard.color}
-            number={this.state.Topcard.number}
+            color={this.state.topcard.color}
+            number={this.state.topcard.number}
           />
         </div>
         <div className="game-info">
+          {this.state.player}
         </div>
       </div>
     );

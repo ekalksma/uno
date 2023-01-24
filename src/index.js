@@ -4,9 +4,7 @@ import './index.css';
 
 function Card(props) {
   return (
-    <button className="card" 
-      style={{backgroundColor: props.color}}
-      >
+    <button className="card" style={{backgroundColor: props.color}}>
       {props.number}
     </button>
   );
@@ -20,7 +18,8 @@ class Game extends React.Component {
       topcard: {number: 0, color: 'red'},
       player: [{number: 0, color: 'red'},{number: 0, color: 'red'}],
     };
-    console.log(this.state.Deck)
+
+    
   }
 
   componentDidMount() {
@@ -29,7 +28,7 @@ class Game extends React.Component {
 
   setTopcard() {
     this.setState({
-      Topcard: this.state.deck[0]
+      topcard: this.state.deck[0]
     })
   }
 
@@ -44,7 +43,7 @@ class Game extends React.Component {
       for (let i = 0; i < 10; i++) {
         deck.push({
           color: color,
-          number: 1,
+          number: i,
        })
       }  
     })
@@ -53,6 +52,16 @@ class Game extends React.Component {
   }
 
   render() {
+    const player = this.state.player;
+    const playerCards = player.map(card => {
+      return (
+        <Card 
+          color={card.color}
+          number={card.number}
+        />
+      )
+    })
+
     return (
       <div className="game">
         <div className="topcard">
@@ -61,8 +70,8 @@ class Game extends React.Component {
             number={this.state.topcard.number}
           />
         </div>
-        <div className="game-info">
-          {this.state.player}
+        <div className="player-cards">
+          {playerCards}
         </div>
       </div>
     );

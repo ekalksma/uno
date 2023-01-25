@@ -4,7 +4,10 @@ import './index.css';
 
 function Card(props) {
   return (
-    <button className="card" style={{backgroundColor: props.color}}>
+    <button className="card" 
+      style={{backgroundColor: props.color}}
+      onClick={() => props.onClick({color: props.color, number: props.number})}
+    >
       {props.number}
     </button>
   );
@@ -46,12 +49,24 @@ class Game extends React.Component {
     })
   }
 
-  handleClick(i) {
+  handleClick(selectedCard) {
+    let playerCards = this.state.player;
+
+    const index = playerCards.findIndex(object => {
+      return object.color === selectedCard.color && object.number === selectedCard.number;
+    });
+
+    playerCards.splice(index, 1);
+
+    this.setState({
+      player: playerCards,
+      topcard: selectedCard,
+    })
   }
 
   createDeck() {
     let deck = [];
-    const colors = ['red','blue','green','yellow'];
+    const colors = ['red','blue','chartreuse','gold'];
 
     colors.forEach(color => {
       for (let i = 0; i < 10; i++) {
@@ -72,6 +87,7 @@ class Game extends React.Component {
         <Card 
           color={card.color}
           number={card.number}
+          onClick={(card) => this.handleClick(card)}
         />
       )
     })
@@ -82,6 +98,7 @@ class Game extends React.Component {
           <Card
             color={this.state.topcard.color}
             number={this.state.topcard.number}
+            onClick={() => console.log("Nice Try")}
           />
         </div>
         <div className="player-cards">

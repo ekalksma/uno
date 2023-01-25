@@ -1,5 +1,6 @@
 body {
     font: 14px "Century Gothic", Futura, sans-serif;
+    background-color: grey;
   }
 
   .card {
@@ -22,6 +23,7 @@ body {
   .player-cards{
     width:1000px;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
+    gap: 10px;
     margin-top: 20px;
   }

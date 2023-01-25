@@ -16,19 +16,33 @@ class Game extends React.Component {
     this.state = {
       deck: this.createDeck(),
       topcard: {number: 0, color: 'red'},
-      player: [{number: 0, color: 'red'},{number: 0, color: 'red'}],
+      player: [],
     };
 
-    
   }
 
   componentDidMount() {
     this.setTopcard();
+    this.drawCards(7);
  }
 
   setTopcard() {
     this.setState({
       topcard: this.state.deck[0]
+    })
+  }
+
+  drawCards(numberOfCards) {
+    let deck = this.state.deck;
+    let playerCards = this.state.player;
+
+    for(let i = 0; i < numberOfCards; i++) {
+      playerCards.push(deck.pop());
+    }
+
+    this.setState({
+      deck: deck,
+      player: playerCards,
     })
   }
 

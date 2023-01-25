@@ -20,7 +20,7 @@ body {
   }
   
   .player-cards{
-    width:800px;
+    width:1000px;
     display: flex;
     justify-content: space-between;
     margin-top: 20px;

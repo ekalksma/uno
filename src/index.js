@@ -25,13 +25,18 @@ class Game extends React.Component {
   }
 
   componentDidMount() {
+    this.shuffleDeck();
     this.setTopcard();
     this.drawCards(7);
  }
 
   setTopcard() {
+    let deck = this.state.deck;
+    let topcard = deck.pop()
+
     this.setState({
-      topcard: this.state.deck[0]
+      deck: deck,
+      topcard: topcard
     })
   }
 
@@ -64,6 +69,15 @@ class Game extends React.Component {
     })
   }
 
+  shuffleDeck() {
+    let deck = this.state.deck;
+    deck.sort(() => Math.random() - 0.5);
+
+    this.setState({
+      deck: deck,
+    })
+  }
+
   createDeck() {
     let deck = [];
     const colors = ['red','blue','chartreuse','gold'];
@@ -77,7 +91,7 @@ class Game extends React.Component {
       }  
     })
 
-    return deck.sort(() => Math.random() - 0.5);
+    return deck;
   }
 
   render() {

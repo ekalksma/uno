@@ -56,17 +56,20 @@ class Game extends React.Component {
 
   handleClick(selectedCard) {
     let playerCards = this.state.player;
+    let topcard = this.state.topcard;
 
-    const index = playerCards.findIndex(object => {
-      return object.color === selectedCard.color && object.number === selectedCard.number;
-    });
-
-    playerCards.splice(index, 1);
-
-    this.setState({
-      player: playerCards,
-      topcard: selectedCard,
-    })
+    if (selectedCard.color === topcard.color || selectedCard.number === topcard.number){
+      const index = playerCards.findIndex(object => {
+        return object.color === selectedCard.color && object.number === selectedCard.number;
+      });
+  
+      playerCards.splice(index, 1);
+  
+      this.setState({
+        player: playerCards,
+        topcard: selectedCard,
+      })
+    }
   }
 
   shuffleDeck() {
@@ -101,7 +104,7 @@ class Game extends React.Component {
         <Card 
           color={card.color}
           number={card.number}
-          onClick={(card) => this.handleClick(card)}
+          onClick={() => this.handleClick(card)}
         />
       )
     })

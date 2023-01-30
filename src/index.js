@@ -25,7 +25,7 @@ class Game extends React.Component {
   }
 
   componentDidMount() {
-    this.shuffleDeck();
+    // this.shuffleDeck();
     this.setTopcard();
     this.drawCards(0,7);
  }
@@ -86,13 +86,45 @@ class Game extends React.Component {
     const colors = ['red','blue','chartreuse','gold'];
 
     colors.forEach(color => {
-      for (let i = 0; i < 10; i++) {
+      deck.push({
+        color: color,
+        number: 0,
+      });
+
+      for (let i = 1; i < 10; i++) {
         deck.push({
           color: color,
           number: i,
-       })
-      }  
+       });
+       deck.push({
+        color: color,
+        number: i,
+     });
+      }
+      // 11 = +2, 12 = Reverse, 13 = Skip turn
+      for (let i = 11; i < 14; i++) {
+        deck.push({
+          color: color,
+          number: i,
+        });
+        deck.push({
+          color: color,
+          number: i,
+        });
+      }
+      // 14 = Choose color
+      deck.push({
+        color: color,
+        number: 14,
+      }); 
+      // 15 = +4
+      deck.push({
+        color: color,
+        number: 15,
+      }); 
     })
+
+    console.log(deck);
 
     return deck;
   }

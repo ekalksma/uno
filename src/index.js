@@ -19,7 +19,7 @@ class Game extends React.Component {
     this.state = {
       deck: this.createDeck(),
       topcard: {number: 0, color: 'red'},
-      player: [],
+      players: [[],[]],
     };
 
   }
@@ -27,7 +27,7 @@ class Game extends React.Component {
   componentDidMount() {
     this.shuffleDeck();
     this.setTopcard();
-    this.drawCards(7);
+    this.drawCards(0,7);
  }
 
   setTopcard() {
@@ -40,33 +40,33 @@ class Game extends React.Component {
     })
   }
 
-  drawCards(numberOfCards) {
+  drawCards(playerIndex, numberOfCards) {
     let deck = this.state.deck;
-    let playerCards = this.state.player;
+    let players = this.state.players;
 
     for(let i = 0; i < numberOfCards; i++) {
-      playerCards.push(deck.pop());
+      players[playerIndex].push(deck.pop());
     }
 
     this.setState({
       deck: deck,
-      player: playerCards,
+      players: players,
     })
   }
 
   handleClick(selectedCard) {
-    let playerCards = this.state.player;
+    let players = this.state.players;
     let topcard = this.state.topcard;
 
     if (selectedCard.color === topcard.color || selectedCard.number === topcard.number){
-      const index = playerCards.findIndex(object => {
+      const index = players[0].findIndex(object => {
         return object.color === selectedCard.color && object.number === selectedCard.number;
       });
   
-      playerCards.splice(index, 1);
+      players[0].splice(index, 1);
   
       this.setState({
-        player: playerCards,
+        players: players,
         topcard: selectedCard,
       })
     }
@@ -98,8 +98,8 @@ class Game extends React.Component {
   }
 
   render() {
-    const player = this.state.player;
-    const playerCards = player.map(card => {
+    const players = this.state.players;
+    const playerCards = players[0].map(card => {
       return (
         <Card 
           color={card.color}

@@ -1,29 +1,43 @@
 body {
-    font: 14px "Century Gothic", Futura, sans-serif;
-    background-color: grey;
-  }
+  font: 14px "Century Gothic", Futura, sans-serif;
+  background-color: grey;
+}
 
-  .card {
-    border: 10px solid black;
-    color: white;
-    border-radius: 30px;
-    font-size: 40px;
-    font-weight: bold;
-    padding: 70px 50px;
-    text-align: center;
-  }
-  
-  .game {
-    height: 300px;
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-  }
-  
-  .player-cards{
-    width:1000px;
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-top: 20px;
-  }
+.card {
+  border: 10px solid black;
+  color: white;
+  border-radius: 30px;
+  font-size: 40px;
+  font-weight: bold;
+  padding: 0;
+  width: 140px;
+  height: 180px;
+  text-align: center;
+}
+
+.select-color {
+  background-image: linear-gradient(red, blue, chartreuse, gold);
+}
+
+.plus-four {
+  background-image: linear-gradient(to left, red, blue, chartreuse, gold); 
+}
+
+.skip {
+  font-size: 80px;
+}
+
+.game {
+  height: 300px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.player-cards{
+  width:1000px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}

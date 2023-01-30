@@ -3,6 +3,50 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 
 function Card(props) {
+  if (props.number === 11) {
+    return (
+      <button className="card" 
+        style={{backgroundColor: props.color}}
+        onClick={() => props.onClick({color: props.color, number: props.number})}
+      >
+        +2
+      </button>
+    );
+  }
+
+  if (props.number === 13) {
+    return (
+      <button className="card skip" 
+        style={{backgroundColor: props.color}}
+        onClick={() => props.onClick({color: props.color, number: props.number})}
+      >
+        🛇
+      </button>
+    );
+  }
+
+  if (props.number === 14) {
+    return (
+      <button className="card select-color"
+        style={{backgroundColor: "black"}}
+        onClick={() => props.onClick({color: props.color, number: props.number})}
+      >
+        
+      </button>
+    );
+  }
+
+  if (props.number === 15) {
+    return (
+      <button className="card plus-four"
+        style={{backgroundColor: "black"}}
+        onClick={() => props.onClick({color: props.color, number: props.number})}
+      >
+        +4
+      </button>
+    );
+  }
+
   return (
     <button className="card" 
       style={{backgroundColor: props.color}}
@@ -95,36 +139,30 @@ class Game extends React.Component {
         deck.push({
           color: color,
           number: i,
-       });
-       deck.push({
-        color: color,
-        number: i,
-     });
+        },{
+          color: color,
+          number: i,
+        });
       }
       // 11 = +2, 12 = Reverse, 13 = Skip turn
       for (let i = 11; i < 14; i++) {
         deck.push({
           color: color,
           number: i,
-        });
-        deck.push({
+        },{
           color: color,
           number: i,
         });
       }
-      // 14 = Choose color
-      deck.push({
-        color: color,
-        number: 14,
-      }); 
-      // 15 = +4
-      deck.push({
-        color: color,
-        number: 15,
-      }); 
-    })
 
-    console.log(deck);
+      deck.push({
+        color: color,
+        number: 14, //Choose color
+      },{
+        color: color,
+        number: 15, //+4
+      });  
+    })
 
     return deck;
   }

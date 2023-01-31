@@ -103,8 +103,19 @@ class Game extends React.Component {
     let players = this.state.players;
     let topcard = this.state.topcard;
     const playerIndex = 0;
+    const availableMoves = this.getAvailableMoves(topcard, playerIndex);
 
-    if (this.getAvailableMoves(topcard, 0).includes(selectedCard)){
+    if (availableMoves.length === 0) {
+      this.drawCards(playerIndex, 1);
+      console.log("Lol");
+
+      this.setState({
+        players: players,
+      },() => {
+        this.handleAI();
+      });
+    }
+    else if (availableMoves.includes(selectedCard)){
       const index = this.getCardIndex(selectedCard, playerIndex)
   
       players[playerIndex].splice(index, 1);
@@ -119,7 +130,8 @@ class Game extends React.Component {
   }
 
   getCardIndex(card, playerIndex) {
-    return this.state.players[playerIndex].findIndex(object => {
+    return this.state.players[playerIndex].findIndex(object => 
+    {
       return object.color === card.color && object.number === card.number;
     });
   }
@@ -215,7 +227,7 @@ class Game extends React.Component {
         />
       )
     })
-    const AICARDS = players[1].map(card => {
+    const AICards = players[1].map(card => {
       return (
         <Card 
           color={card.color}
@@ -227,7 +239,7 @@ class Game extends React.Component {
 
     return (
       <div className="game">
-        <div className="player-cards">{AICARDS}</div>
+        <div className="player-cards">{AICards}</div>
         <div className="topcard">
           <Card
             color={this.state.topcard.color}

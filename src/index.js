@@ -69,9 +69,10 @@ class Game extends React.Component {
   }
 
   componentDidMount() {
-    // this.shuffleDeck();
+    this.shuffleDeck();
     this.setTopcard();
     this.drawCards(0,7);
+    this.drawCards(1,7)
  }
 
   setTopcard() {
@@ -101,19 +102,55 @@ class Game extends React.Component {
   handleClick(selectedCard) {
     let players = this.state.players;
     let topcard = this.state.topcard;
+    const playerIndex = 0;
 
-    if (selectedCard.color === topcard.color || selectedCard.number === topcard.number){
-      const index = players[0].findIndex(object => {
-        return object.color === selectedCard.color && object.number === selectedCard.number;
-      });
+    if (this.getAvailableMoves(topcard, 0).includes(selectedCard)){
+      const index = this.getCardIndex(selectedCard, playerIndex)
   
-      players[0].splice(index, 1);
+      players[playerIndex].splice(index, 1);
   
       this.setState({
         players: players,
         topcard: selectedCard,
+      },() => {
+        this.handleAI();
+      });
+    }
+  }
+
+  getCardIndex(card, playerIndex) {
+    return this.state.players[playerIndex].findIndex(object => {
+      return object.color === card.color && object.number === card.number;
+    });
+  }
+
+  handleAI() {
+    let players = this.state.players;
+    const indexAI = 1;
+    const moves = this.getAvailableMoves(this.state.topcard, 1);
+    console.log(moves);
+    if (moves.length > 0 ){
+      const randomIndex = Math.floor(Math.random() * moves.length);
+      const selectedCard = moves[randomIndex];
+      const cardIndex = this.getCardIndex(selectedCard, indexAI)
+      players[indexAI].splice(cardIndex,1);
+      
+      this.setState({
+        players: players,
+        topcard: moves[randomIndex],
       })
     }
+  }
+
+  getAvailableMoves(topcard, playerIndex) {
+    let availableMoves = [];
+    const cards = this.state.players[playerIndex];
+    cards.forEach( card => {
+      if (card.number === topcard.number || card.color === topcard.color) {
+        availableMoves.push(card)
+      }
+    });
+    return availableMoves;
   }
 
   shuffleDeck() {
@@ -178,9 +215,19 @@ class Game extends React.Component {
         />
       )
     })
+    const AICARDS = players[1].map(card => {
+      return (
+        <Card 
+          color={card.color}
+          number={card.number}
+          onClick={() => this.handleClick(card)}
+        />
+      )
+    })
 
     return (
       <div className="game">
+        <div className="player-cards">{AICARDS}</div>
         <div className="topcard">
           <Card
             color={this.state.topcard.color}
@@ -188,12 +235,18 @@ class Game extends React.Component {
             onClick={() => console.log("Nice Try")}
           />
         </div>
-        <div className="player-cards">
-          {playerCards}
-        </div>
+        <div className="player-cards">{playerCards}</div>
       </div>
     );
   }
+}
+
+function wait(ms){
+  var start = new Date().getTime();
+  var end = start;
+  while(end < start + ms) {
+    end = new Date().getTime();
+ }
 }
 
 // ========================================

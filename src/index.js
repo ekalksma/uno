@@ -3,67 +3,23 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 
 function Card(props) {
-  if (props.number === 11) {
-    return (
-      <button className="card" 
-        style={{backgroundColor: props.color}}
-        onClick={() => props.onClick({color: props.color, number: props.number})}
-      >
-        +2
-      </button>
-    );
-  }
+  let style = ["card", props.color, props.number];
+  const cards = {
+    11: ["card", props.color, "+2"],
+    12: ["card skip", props.color, "↺"], //reverse
+    13: ["card skip", props.color, "🛇"], //skip
+    14: ["card select-color", "black", ""], //select color
+    15: ["card", "orange", "+4"]
+  };
 
-  if (props.number === 12) {
-    return (
-      <button className="card skip" 
-        style={{backgroundColor: props.color}}
-        onClick={() => props.onClick({color: props.color, number: props.number})}
-      >
-        ↺
-      </button>
-    );
-  }
-
-  if (props.number === 13) {
-    return (
-      <button className="card skip" 
-        style={{backgroundColor: props.color}}
-        onClick={() => props.onClick({color: props.color, number: props.number})}
-      >
-        🛇
-      </button>
-    );
-  }
-
-  if (props.number === 14) {
-    return (
-      <button className="card select-color"
-        style={{backgroundColor: "black"}}
-        onClick={() => props.onClick({color: props.color, number: props.number})}
-      >
-        
-      </button>
-    );
-  }
-
-  if (props.number === 15) {
-    return (
-      <button className="card"
-        style={{backgroundColor: "orange"}}
-        onClick={() => props.onClick({color: props.color, number: props.number})}
-      >
-        +4
-      </button>
-    );
-  }
+  if (props.number > 9) style = cards[props.number];
 
   return (
-    <button className="card" 
-      style={{backgroundColor: props.color}}
+    <button className={style[0]}
+      style={{backgroundColor: style[1]}}
       onClick={() => props.onClick({color: props.color, number: props.number})}
     >
-      {props.number}
+      {style[2]}
     </button>
   );
 }
@@ -74,6 +30,7 @@ class Game extends React.Component {
     this.state = {
       deck: this.createDeck(),
       topcard: {number: 0, color: 'red'},
+      currentPlayerIndex: 0,
       players: [[],[]],
     };
 
@@ -85,6 +42,47 @@ class Game extends React.Component {
     this.drawCards(0,7);
     this.drawCards(1,7)
  }
+
+  createDeck() {
+    let deck = [];
+    const colors = ['red','blue','chartreuse','gold'];
+
+    colors.forEach(color => {
+      deck.push({
+        color: color,
+        number: 0,
+      },{
+        color: color,
+        number: 14, //Choose color
+      },{
+        color: color,
+        number: 15, //+4
+      });
+
+      for (let i = 1; i < 14; i++) {
+        if (i !== 10){
+          deck.push({
+            color: color,
+            number: i,
+          },{
+            color: color,
+            number: i,
+          });
+        } 
+      }
+    });
+
+    return deck;
+  }
+
+  shuffleDeck() {
+    let deck = this.state.deck;
+    deck.sort(() => Math.random() - 0.5);
+
+    this.setState({
+      deck: deck,
+    })
+  }
 
   setTopcard() {
     let deck = this.state.deck;
@@ -115,6 +113,7 @@ class Game extends React.Component {
     let topcard = this.state.topcard;
     const playerIndex = 0;
     const availableMoves = this.getAvailableMoves(topcard, playerIndex);
+    this.hasPlusTwo(this.state.players[0]);
 
     if (availableMoves.length === 0) {
       this.drawCards(playerIndex, 1);
@@ -139,19 +138,12 @@ class Game extends React.Component {
     }
   }
 
-  getCardIndex(card, playerIndex) {
-    return this.state.players[playerIndex].findIndex(object => 
-    {
-      return object.color === card.color && object.number === card.number;
-    });
-  }
-
  async handleAI() {
     await timeout(1000);
     let players = this.state.players;
     const indexAI = 1;
     const moves = this.getAvailableMoves(this.state.topcard, 1);
-    console.log(moves);
+
     if (moves.length > 0 ){
       const randomIndex = Math.floor(Math.random() * moves.length);
       const selectedCard = moves[randomIndex];
@@ -178,57 +170,27 @@ class Game extends React.Component {
     });
     return availableMoves;
   }
+  
+  hasPlusTwo(cards) {
+    let hasTwo = false;
 
-  shuffleDeck() {
-    let deck = this.state.deck;
-    deck.sort(() => Math.random() - 0.5);
+    cards.forEach(card => {
+      if (card.number === 11) {
+        hasTwo = true;
+      }
+    });
+    console.log(hasTwo);
 
-    this.setState({
-      deck: deck,
-    })
+    return hasTwo;
   }
 
-  createDeck() {
-    let deck = [];
-    const colors = ['red','blue','chartreuse','gold'];
-
-    colors.forEach(color => {
-      deck.push({
-        color: color,
-        number: 0,
-      });
-
-      for (let i = 1; i < 10; i++) {
-        deck.push({
-          color: color,
-          number: i,
-        },{
-          color: color,
-          number: i,
-        });
-      }
-      // 11 = +2, 12 = Reverse, 13 = Skip turn
-      for (let i = 11; i < 14; i++) {
-        deck.push({
-          color: color,
-          number: i,
-        },{
-          color: color,
-          number: i,
-        });
-      }
-
-      deck.push({
-        color: color,
-        number: 14, //Choose color
-      },{
-        color: color,
-        number: 15, //+4
-      });  
-    })
-
-    return deck;
+  getCardIndex(card, playerIndex) {
+    return this.state.players[playerIndex].findIndex(object => 
+    {
+      return object.color === card.color && object.number === card.number;
+    });
   }
+  
 
   render() {
     const players = this.state.players;

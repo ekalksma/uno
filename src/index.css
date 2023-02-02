@@ -4,7 +4,7 @@ body {
 }
 
 .card {
-  border: 10px solid black;
+  border: 7px solid black;
   color: white;
   border-radius: 30px;
   font-size: 40px;
@@ -23,9 +23,9 @@ body {
   background-image: linear-gradient(red, blue, chartreuse, gold);
 }
 
-.plus-four {
+/* .plus-four {
   background-image: linear-gradient(to left, red, blue, chartreuse, gold); 
-}
+} */
 
 .skip {
   font-size: 80px;
@@ -39,7 +39,7 @@ body {
 }
 
 .player-cards{
-  width:1000px;
+  /* width:1000px; */
   display: flex;
   justify-content: center;
   gap: 10px;

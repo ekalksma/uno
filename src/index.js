@@ -14,6 +14,17 @@ function Card(props) {
     );
   }
 
+  if (props.number === 12) {
+    return (
+      <button className="card skip" 
+        style={{backgroundColor: props.color}}
+        onClick={() => props.onClick({color: props.color, number: props.number})}
+      >
+        ↺
+      </button>
+    );
+  }
+
   if (props.number === 13) {
     return (
       <button className="card skip" 
@@ -38,8 +49,8 @@ function Card(props) {
 
   if (props.number === 15) {
     return (
-      <button className="card plus-four"
-        style={{backgroundColor: "black"}}
+      <button className="card"
+        style={{backgroundColor: "orange"}}
         onClick={() => props.onClick({color: props.color, number: props.number})}
       >
         +4
@@ -107,7 +118,6 @@ class Game extends React.Component {
 
     if (availableMoves.length === 0) {
       this.drawCards(playerIndex, 1);
-      console.log("Lol");
 
       this.setState({
         players: players,
@@ -136,7 +146,8 @@ class Game extends React.Component {
     });
   }
 
-  handleAI() {
+ async handleAI() {
+    await timeout(1000);
     let players = this.state.players;
     const indexAI = 1;
     const moves = this.getAvailableMoves(this.state.topcard, 1);
@@ -151,6 +162,9 @@ class Game extends React.Component {
         players: players,
         topcard: moves[randomIndex],
       })
+    }
+    else {
+      this.drawCards(indexAI, 1);
     }
   }
 
@@ -253,12 +267,8 @@ class Game extends React.Component {
   }
 }
 
-function wait(ms){
-  var start = new Date().getTime();
-  var end = start;
-  while(end < start + ms) {
-    end = new Date().getTime();
- }
+function timeout(delay) {
+  return new Promise( res => setTimeout(res, delay) );
 }
 
 // ========================================

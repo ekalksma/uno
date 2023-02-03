@@ -31,6 +31,7 @@ class Game extends React.Component {
       deck: this.createDeck(),
       topcard: {number: 0, color: 'red'},
       currentPlayerIndex: 0,
+      clockwise: true,
       players: [[],[]],
     };
 
@@ -111,27 +112,31 @@ class Game extends React.Component {
   handleClick(selectedCard) {
     let players = this.state.players;
     let topcard = this.state.topcard;
+    let currentPlayerIndex = this.state.currentPlayerIndex;
     const playerIndex = 0;
     const availableMoves = this.getAvailableMoves(topcard, playerIndex);
-    this.hasPlusTwo(this.state.players[0]);
+    
 
     if (availableMoves.length === 0) {
-      this.drawCards(playerIndex, 1);
+      this.drawCards(currentPlayerIndex, 1);
+      currentPlayerIndex = this.updateCurrentPlayer();
 
       this.setState({
-        players: players,
+        currentPlayerIndex: currentPlayerIndex,
       },() => {
         this.handleAI();
       });
     }
     else if (availableMoves.includes(selectedCard)){
-      const index = this.getCardIndex(selectedCard, playerIndex)
+      const index = this.getCardIndex(selectedCard, currentPlayerIndex);
   
       players[playerIndex].splice(index, 1);
+      currentPlayerIndex = this.updateCurrentPlayer();
   
       this.setState({
         players: players,
         topcard: selectedCard,
+        currentPlayerIndex: currentPlayerIndex,
       },() => {
         this.handleAI();
       });
@@ -141,23 +146,40 @@ class Game extends React.Component {
  async handleAI() {
     await timeout(1000);
     let players = this.state.players;
-    const indexAI = 1;
+    let currentPlayerIndex = this.state.currentPlayerIndex;
     const moves = this.getAvailableMoves(this.state.topcard, 1);
 
     if (moves.length > 0 ){
       const randomIndex = Math.floor(Math.random() * moves.length);
       const selectedCard = moves[randomIndex];
-      const cardIndex = this.getCardIndex(selectedCard, indexAI)
-      players[indexAI].splice(cardIndex,1);
+      const cardIndex = this.getCardIndex(selectedCard, currentPlayerIndex)
+      players[currentPlayerIndex].splice(cardIndex,1);
+
+      currentPlayerIndex = this.updateCurrentPlayer();
       
       this.setState({
         players: players,
         topcard: moves[randomIndex],
+        currentPlayerIndex: currentPlayerIndex,
       })
     }
     else {
-      this.drawCards(indexAI, 1);
+      this.drawCards(currentPlayerIndex, 1);
+      currentPlayerIndex = this.updateCurrentPlayer();
+
+      this.setState({
+        currentPlayerIndex: currentPlayerIndex,
+      })
     }
+  }
+
+  updateCurrentPlayer() {
+    const clockwise = this.state.clockwise;
+    let currentPlayerIndex = this.state.currentPlayerIndex;
+    const players = this.state.players;
+
+    if (clockwise) return ++currentPlayerIndex > players.length - 1 ? 0 : currentPlayerIndex;
+    
   }
 
   getAvailableMoves(topcard, playerIndex) {

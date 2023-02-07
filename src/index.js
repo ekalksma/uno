@@ -50,12 +50,15 @@ class Game extends React.Component {
 
     colors.forEach(color => {
       deck.push({
+        pIndex: -1,
         color: color,
         number: 0,
       },{
+        pIndex: -1,
         color: color,
         number: 14, //Choose color
       },{
+        pIndex: -1,
         color: color,
         number: 15, //+4
       });
@@ -63,9 +66,11 @@ class Game extends React.Component {
       for (let i = 1; i < 14; i++) {
         if (i !== 10){
           deck.push({
+            pIndex: -1,
             color: color,
             number: i,
           },{
+            pIndex: -1,
             color: color,
             number: i,
           });
@@ -100,7 +105,11 @@ class Game extends React.Component {
     let players = this.state.players;
 
     for(let i = 0; i < numberOfCards; i++) {
-      players[playerIndex].push(deck.pop());
+      let card = deck.pop();
+      console.log(card.pIndex);
+      card.playerIndex = playerIndex;
+      console.log(card.pIndex);
+      players[playerIndex].push(card);
     }
 
     this.setState({
@@ -185,11 +194,13 @@ class Game extends React.Component {
   getAvailableMoves(topcard, playerIndex) {
     let availableMoves = [];
     const cards = this.state.players[playerIndex];
+
     cards.forEach( card => {
       if (card.number === topcard.number || card.color === topcard.color) {
         availableMoves.push(card)
       }
     });
+
     return availableMoves;
   }
   
@@ -201,7 +212,6 @@ class Game extends React.Component {
         hasTwo = true;
       }
     });
-    console.log(hasTwo);
 
     return hasTwo;
   }

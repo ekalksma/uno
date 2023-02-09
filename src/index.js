@@ -106,9 +106,8 @@ class Game extends React.Component {
 
     for(let i = 0; i < numberOfCards; i++) {
       let card = deck.pop();
-      console.log(card.pIndex);
-      card.playerIndex = playerIndex;
-      console.log(card.pIndex);
+      card.pIndex = playerIndex;
+
       players[playerIndex].push(card);
     }
 
@@ -124,9 +123,22 @@ class Game extends React.Component {
     let currentPlayerIndex = this.state.currentPlayerIndex;
     const playerIndex = 0;
     const availableMoves = this.getAvailableMoves(topcard, playerIndex);
+    console.log(topcard);
     
+    if (topcard.number === 13 && topcard.pIndex !== -1) {
+      console.log("hello")
+      topcard.pIndex = -1;
+      currentPlayerIndex = this.updateCurrentPlayer();
 
-    if (availableMoves.length === 0) {
+      this.setState({
+        topcard: topcard,
+        currentPlayerIndex: currentPlayerIndex,
+      },() => {
+        this.handleAI();
+      });
+    }
+
+    else if (availableMoves.length === 0) {
       this.drawCards(currentPlayerIndex, 1);
       currentPlayerIndex = this.updateCurrentPlayer();
 
@@ -136,7 +148,7 @@ class Game extends React.Component {
         this.handleAI();
       });
     }
-    else if (availableMoves.includes(selectedCard)){
+    else if (availableMoves.includes(selectedCard)) {
       const index = this.getCardIndex(selectedCard, currentPlayerIndex);
   
       players[playerIndex].splice(index, 1);
@@ -156,19 +168,32 @@ class Game extends React.Component {
     await timeout(1000);
     let players = this.state.players;
     let currentPlayerIndex = this.state.currentPlayerIndex;
-    const moves = this.getAvailableMoves(this.state.topcard, 1);
+    let topcard = this.state.topcard;
+    const moves = this.getAvailableMoves(this.state.topcard, currentPlayerIndex);
 
-    if (moves.length > 0 ){
+    if (topcard.number === 13 && topcard.pIndex !== -1) {
+      topcard.pIndex = -1;
+      currentPlayerIndex = this.updateCurrentPlayer();
+
+      this.setState({
+        topcard: topcard,
+        currentPlayerIndex: currentPlayerIndex,
+      })
+    }
+
+    else if (moves.length > 0 ){
       const randomIndex = Math.floor(Math.random() * moves.length);
       const selectedCard = moves[randomIndex];
       const cardIndex = this.getCardIndex(selectedCard, currentPlayerIndex)
-      players[currentPlayerIndex].splice(cardIndex,1);
 
+      topcard = moves[randomIndex];
+      players[currentPlayerIndex].splice(cardIndex,1);
+      
       currentPlayerIndex = this.updateCurrentPlayer();
       
       this.setState({
         players: players,
-        topcard: moves[randomIndex],
+        topcard: topcard,
         currentPlayerIndex: currentPlayerIndex,
       })
     }
